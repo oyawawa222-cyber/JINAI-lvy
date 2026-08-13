@@ -7,23 +7,21 @@
 html, body {
   height: 100vh;
   overflow: hidden;
-  /* CSS内联SVG手掌光标，无外部图片 */
-  cursor: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="32" height="32" viewBox="0 0 24 24" fill="%23222"><path d="M10 4v7.5c0 .6-.4 1-1 1s-1-.4-1-1V4c0-.6.4-1 1-1s1 .4 1 1zm-4 0v9.5c0 .6-.4 1-1 1s-1-.4-1-1V4c0-.6.4-1 1-1s1 .4 1 1zm8-1c.6 0 1 .4 1 1v8.5c0 .6-.4 1-1 1s-1-.4-1-1V4c0-.6.4-1 1-1zm4 3c.6 0 1 .4 1 1v6.5c0 .6-.4 1-1 1s-1-.4-1-1V7c0-.6.4-1 1-1zM3 13c0-1.1.9-2 2-2h14c1.1 0 2 .9 2 2v3c0 3.3-2.7 6-6 6h-6c-3.3 0-6-2.7-6-6v-3z"/></svg>') 0 0, default;
+  /* 取消内联SVG光标，交给JS加载qiqiu.png */
+  cursor: default;
 }
 button {
-  cursor: default;
+  cursor: pointer;
   border: none;
 }
-
 /* Z-index层级规范（从低到高）
 1. 滚动内容层：1
 2. 感应区：5
 3. 底部景点弹窗：90
 4. 区域选择弹窗：95
 5. 初始化遮罩弹窗：99
-6. 火柴人顶层：999
+6. 小车顶层：999
 */
-
 /* ====================== 初始化全屏遮罩弹窗 ====================== */
 .init-mask {
   position: fixed;
@@ -76,7 +74,6 @@ button {
   text-align: center;
   font-size: 15px;
 }
-
 /* ====================== 左右滚动感应区域 ====================== */
 .scroll-sense {
   position: fixed;
@@ -89,8 +86,7 @@ button {
 }
 .left-sense { left: 0; }
 .right-sense { right: 0; }
-
-/* ====================== 横向滚动主容器【无间隙+黑色分隔线】 ====================== */
+/* ====================== 横向滚动主容器【完全保留你原版滚动样式，无修改】 ====================== */
 .scroll-wrap {
   width: 100vw;
   height: 100vh;
@@ -109,7 +105,6 @@ button {
   background: #999;
   border-radius: 4px;
 }
-
 .scroll-content {
   display: flex;
   height: 100%;
@@ -123,7 +118,7 @@ button {
   width: 100vw;
   height: 100vh;
   border-left: 4px solid #000; /* 左侧黑色分隔线 */
-  background: #e8e8e8 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="%23aaa"><rect width="60" height="60" stroke="%23999" stroke-width="2" fill="none"/><text x="10" y="35" font-size="12" fill="%23666">图丢失</text></svg>') center no-repeat;
+  background: #e8e8e8 url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="60" height="60" fill="%23aaa"><rect width="60" height="60" stroke="%23999" stroke-width="2" fill="none" /><text x="10" y="35" font-size="12" fill="%23666">图丢失</text></svg>') center no-repeat;
   position: relative;
 }
 /* 第一张图去掉左边黑线 */
@@ -137,7 +132,6 @@ button {
   display: block;
   background: transparent;
 }
-
 /* ====================== 景点点位按钮 + CSS水滴定位图标 ====================== */
 .spot-btn {
   position: absolute;
@@ -171,8 +165,7 @@ button {
   left: 50%;
   transform: translate(-50%, -50%) rotate(45deg);
 }
-
-/* ====================== 跟随鼠标火柴人 ====================== */
+/* ====================== 跟随鼠标小车（仅修复跟随偏移，不影响滚动） ====================== */
 .match-stick {
   position: fixed;
   top: 0;
@@ -180,13 +173,15 @@ button {
   z-index: 999;
   pointer-events: none;
   transform: translate(-50%, -50%);
+  will-change: left, top;
 }
 .stick-img {
   width: 60px;
   height: auto;
   display: block;
+  transform: translateZ(0);
+  image-rendering: crisp-edges;
 }
-
 /* ====================== 底部景点详情弹窗 ====================== */
 .spot-mask {
   position: fixed;
@@ -250,8 +245,7 @@ button {
   color: #fff;
   border-radius: 4px;
 }
-
-/* ====================== 左下角区域选择按钮 & 弹窗 ====================== */
+/* ====================== 左下角区域选择按钮（修复点击层级） ====================== */
 .area-select-btn {
   position: fixed;
   left: 20px;
@@ -259,13 +253,18 @@ button {
   padding: 10px 18px;
   background: #000;
   color: #fff;
-  z-index: 92;
+  z-index: 100;
   border-radius: 4px;
+  pointer-events: auto !important;
+}
+.area-select-btn.disabled{
+  pointer-events: none;
+  opacity: 0.6;
 }
 .area-mask {
   position: fixed;
   inset: 0;
-  background: rgba(0,0,0,0.4);
+  background: rgba(0,0,0.4);
   z-index: 94;
   display: none;
 }
